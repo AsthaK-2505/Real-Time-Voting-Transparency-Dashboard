@@ -1,9 +1,14 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import DistrictCard from './DistrictCard';
-import AnomalyDetector from './AnomalyDetector';
-import LiveFeed from './LiveFeed';
-import CandidateManager from './CandidateManager';
-import { VoteTrendsChart, DistrictVotesChart, VoteShareChart, TurnoutChart } from './VoteChart';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import DistrictCard from "./DistrictCard";
+import AnomalyDetector from "./AnomalyDetector";
+import LiveFeed from "./LiveFeed";
+import CandidateManager from "./CandidateManager";
+import {
+  VoteTrendsChart,
+  DistrictVotesChart,
+  VoteShareChart,
+  TurnoutChart,
+} from "./VoteChart";
 import {
   initializeDistrictData,
   updateDistrictVotes,
@@ -12,10 +17,21 @@ import {
   getCandidates,
   setCandidates,
   calculateOverallStats,
-} from '../utils/dataGenerator';
-import { analyzeAllAnomalies, calculateAnomalyScore } from '../utils/anomalyDetection';
-import { District, VoteHistoryEntry, Activity, Anomaly, OverallStats, UpdateInterval, Candidate } from '../types';
-import config from '../config/config';
+} from "../utils/dataGenerator";
+import {
+  analyzeAllAnomalies,
+  calculateAnomalyScore,
+} from "../utils/anomalyDetection";
+import {
+  District,
+  VoteHistoryEntry,
+  Activity,
+  Anomaly,
+  OverallStats,
+  UpdateInterval,
+  Candidate,
+} from "../types";
+import config from "../config/config";
 
 /**
  * Main Dashboard Component
@@ -32,8 +48,11 @@ const Dashboard: React.FC = () => {
   const [updateInterval, setUpdateInterval] = useState<UpdateInterval>(
     config.updateIntervals.normal as UpdateInterval
   );
-  const [candidates, setCandidatesState] = useState<Candidate[]>(getCandidates());
-  const [showCandidateManager, setShowCandidateManager] = useState<boolean>(false);
+  const [candidates, setCandidatesState] = useState<Candidate[]>(
+    getCandidates()
+  );
+  const [showCandidateManager, setShowCandidateManager] =
+    useState<boolean>(false);
 
   // Initialize data on component mount
   useEffect(() => {
@@ -45,13 +64,13 @@ const Dashboard: React.FC = () => {
         {
           id: Date.now(),
           timestamp: new Date(),
-          districtName: 'System',
-          action: 'system',
-          details: 'Dashboard initialized. Monitoring 8 districts.',
+          districtName: "System",
+          action: "system",
+          details: "Dashboard initialized. Monitoring 8 districts.",
         },
       ]);
     } catch (error) {
-      console.error('Error initializing dashboard:', error);
+      console.error("Error initializing dashboard:", error);
     }
   }, []);
 
@@ -62,7 +81,7 @@ const Dashboard: React.FC = () => {
         const stats = calculateOverallStats(districts);
         setOverallStats(stats);
       } catch (error) {
-        console.error('Error calculating overall stats:', error);
+        console.error("Error calculating overall stats:", error);
       }
     }
   }, [districts]);
@@ -73,34 +92,51 @@ const Dashboard: React.FC = () => {
 
     if (isRunning) {
       intervalId = setInterval(() => {
-        setDistricts(prevDistricts => {
+        setDistricts((prevDistricts) => {
           try {
             // Update district votes
             const updatedDistricts = updateDistrictVotes(prevDistricts);
 
             // Generate vote history entry
-            const historyEntry = generateVoteHistoryEntry(updatedDistricts, new Date());
-            setVoteHistory(prev => [...prev, historyEntry].slice(-config.dataRetention.maxHistoryEntries));
+            const historyEntry = generateVoteHistoryEntry(
+              updatedDistricts,
+              new Date()
+            );
+            setVoteHistory((prev) =>
+              [...prev, historyEntry].slice(
+                -config.dataRetention.maxHistoryEntries
+              )
+            );
 
             // Detect anomalies
-            const detectedAnomalies = analyzeAllAnomalies(updatedDistricts, voteHistory);
+            const detectedAnomalies = analyzeAllAnomalies(
+              updatedDistricts,
+              voteHistory
+            );
 
             // Check for new anomalies
-            detectedAnomalies.forEach(anomaly => {
+            detectedAnomalies.forEach((anomaly) => {
               const existingAnomaly = anomalies.find(
-                a =>
+                (a) =>
                   a.districtId === anomaly.districtId &&
                   a.type === anomaly.type &&
-                  Math.abs(new Date(a.timestamp || 0).getTime() - Date.now()) < 30000
+                  Math.abs(new Date(a.timestamp || 0).getTime() - Date.now()) <
+                    30000
               );
 
               if (!existingAnomaly) {
                 const activity = generateActivityLog(
-                  updatedDistricts.find(d => d.id === anomaly.districtId) || updatedDistricts[0],
-                  'anomaly-detected',
+                  updatedDistricts.find((d) => d.id === anomaly.districtId) ||
+                    updatedDistricts[0],
+                  "anomaly-detected",
                   anomaly.message
                 );
-                setActivities(prev => [activity, ...prev].slice(0, config.dataRetention.maxActivities));
+                setActivities((prev) =>
+                  [activity, ...prev].slice(
+                    0,
+                    config.dataRetention.maxActivities
+                  )
+                );
               }
             });
 
@@ -108,18 +144,23 @@ const Dashboard: React.FC = () => {
 
             // Generate random activity updates
             if (Math.random() < 0.3) {
-              const randomDistrict = updatedDistricts[Math.floor(Math.random() * updatedDistricts.length)];
+              const randomDistrict =
+                updatedDistricts[
+                  Math.floor(Math.random() * updatedDistricts.length)
+                ];
               const activity = generateActivityLog(
                 randomDistrict,
-                'vote-update',
+                "vote-update",
                 `${randomDistrict.votes.toLocaleString()} total votes recorded`
               );
-              setActivities(prev => [activity, ...prev].slice(0, config.dataRetention.maxActivities));
+              setActivities((prev) =>
+                [activity, ...prev].slice(0, config.dataRetention.maxActivities)
+              );
             }
 
             return updatedDistricts;
           } catch (error) {
-            console.error('Error updating districts:', error);
+            console.error("Error updating districts:", error);
             return prevDistricts;
           }
         });
@@ -132,17 +173,17 @@ const Dashboard: React.FC = () => {
   }, [isRunning, updateInterval, voteHistory, anomalies]);
 
   const toggleSimulation = useCallback(() => {
-    setIsRunning(prev => !prev);
+    setIsRunning((prev) => !prev);
 
     if (!isRunning) {
       const activity: Activity = {
         id: Date.now(),
         timestamp: new Date(),
-        districtName: 'System',
-        action: 'system',
-        details: 'Real-time simulation started',
+        districtName: "System",
+        action: "system",
+        details: "Real-time simulation started",
       };
-      setActivities(prev => [activity, ...prev]);
+      setActivities((prev) => [activity, ...prev]);
     }
   }, [isRunning]);
 
@@ -155,95 +196,124 @@ const Dashboard: React.FC = () => {
         {
           id: Date.now(),
           timestamp: new Date(),
-          districtName: 'System',
-          action: 'system',
-          details: 'Dashboard reset. All data cleared.',
+          districtName: "System",
+          action: "system",
+          details: "Dashboard reset. All data cleared.",
         },
       ]);
       setAnomalies([]);
       setIsRunning(false);
     } catch (error) {
-      console.error('Error resetting dashboard:', error);
+      console.error("Error resetting dashboard:", error);
     }
   }, []);
 
   // Candidate CRUD handlers
-  const handleAddCandidate = useCallback((candidateData: Omit<Candidate, 'id'>) => {
-    const newId = `C${Date.now()}`;
-    const newCandidate: Candidate = { ...candidateData, id: newId };
-    
-    const updatedCandidates = [...candidates, newCandidate];
-    setCandidatesState(updatedCandidates);
-    setCandidates(updatedCandidates);
-    
-    // Update all districts to include the new candidate with 0 votes
-    setDistricts(prev => prev.map(district => ({
-      ...district,
-      candidateVotes: {
-        ...district.candidateVotes,
-        [newId]: 0,
-      },
-    })));
-    
-    setActivities(prev => [{
-      id: Date.now(),
-      timestamp: new Date(),
-      districtName: 'System',
-      action: 'system',
-      details: `Candidate "${candidateData.name}" added to the race.`,
-    }, ...prev]);
-  }, [candidates]);
+  const handleAddCandidate = useCallback(
+    (candidateData: Omit<Candidate, "id">) => {
+      const newId = `C${Date.now()}`;
+      const newCandidate: Candidate = { ...candidateData, id: newId };
 
-  const handleUpdateCandidate = useCallback((id: string, candidateData: Omit<Candidate, 'id'>) => {
-    const updatedCandidates = candidates.map(c => 
-      c.id === id ? { ...c, ...candidateData } : c
-    );
-    setCandidatesState(updatedCandidates);
-    setCandidates(updatedCandidates);
-    
-    setActivities(prev => [{
-      id: Date.now(),
-      timestamp: new Date(),
-      districtName: 'System',
-      action: 'system',
-      details: `Candidate "${candidateData.name}" information updated.`,
-    }, ...prev]);
-  }, [candidates]);
+      const updatedCandidates = [...candidates, newCandidate];
+      setCandidatesState(updatedCandidates);
+      setCandidates(updatedCandidates);
 
-  const handleDeleteCandidate = useCallback((id: string) => {
-    const candidate = candidates.find(c => c.id === id);
-    const updatedCandidates = candidates.filter(c => c.id !== id);
-    setCandidatesState(updatedCandidates);
-    setCandidates(updatedCandidates);
-    
-    // Remove candidate votes from all districts
-    setDistricts(prev => prev.map(district => {
-      const { [id]: removed, ...remainingVotes } = district.candidateVotes;
-      return {
-        ...district,
-        candidateVotes: remainingVotes,
-        votes: district.votes - (removed || 0), // Subtract the deleted candidate's votes
-      };
-    }));
-    
-    setActivities(prev => [{
-      id: Date.now(),
-      timestamp: new Date(),
-      districtName: 'System',
-      action: 'system',
-      details: `Candidate "${candidate?.name || 'Unknown'}" removed from the race.`,
-    }, ...prev]);
-  }, [candidates]);
+      // Update all districts to include the new candidate with 0 votes
+      setDistricts((prev) =>
+        prev.map((district) => ({
+          ...district,
+          candidateVotes: {
+            ...district.candidateVotes,
+            [newId]: 0,
+          },
+        }))
+      );
 
-  const handleIntervalChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setUpdateInterval(Number(e.target.value) as UpdateInterval);
-  }, []);
+      setActivities((prev) => [
+        {
+          id: Date.now(),
+          timestamp: new Date(),
+          districtName: "System",
+          action: "system",
+          details: `Candidate "${candidateData.name}" added to the race.`,
+        },
+        ...prev,
+      ]);
+    },
+    [candidates]
+  );
+
+  const handleUpdateCandidate = useCallback(
+    (id: string, candidateData: Omit<Candidate, "id">) => {
+      const updatedCandidates = candidates.map((c) =>
+        c.id === id ? { ...c, ...candidateData } : c
+      );
+      setCandidatesState(updatedCandidates);
+      setCandidates(updatedCandidates);
+
+      setActivities((prev) => [
+        {
+          id: Date.now(),
+          timestamp: new Date(),
+          districtName: "System",
+          action: "system",
+          details: `Candidate "${candidateData.name}" information updated.`,
+        },
+        ...prev,
+      ]);
+    },
+    [candidates]
+  );
+
+  const handleDeleteCandidate = useCallback(
+    (id: string) => {
+      const candidate = candidates.find((c) => c.id === id);
+      const updatedCandidates = candidates.filter((c) => c.id !== id);
+      setCandidatesState(updatedCandidates);
+      setCandidates(updatedCandidates);
+
+      // Remove candidate votes from all districts
+      setDistricts((prev) =>
+        prev.map((district) => {
+          const { [id]: removed, ...remainingVotes } = district.candidateVotes;
+          return {
+            ...district,
+            candidateVotes: remainingVotes,
+            votes: district.votes - (removed || 0), // Subtract the deleted candidate's votes
+          };
+        })
+      );
+
+      setActivities((prev) => [
+        {
+          id: Date.now(),
+          timestamp: new Date(),
+          districtName: "System",
+          action: "system",
+          details: `Candidate "${
+            candidate?.name || "Unknown"
+          }" removed from the race.`,
+        },
+        ...prev,
+      ]);
+    },
+    [candidates]
+  );
+
+  const handleIntervalChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setUpdateInterval(Number(e.target.value) as UpdateInterval);
+    },
+    []
+  );
 
   // Calculate district anomaly scores (memoized)
   const districtAnomalyScores = useMemo(() => {
     const scores: { [key: number]: number } = {};
-    districts.forEach(district => {
-      const districtAnomalies = anomalies.filter(a => a.districtId === district.id);
+    districts.forEach((district) => {
+      const districtAnomalies = anomalies.filter(
+        (a) => a.districtId === district.id
+      );
       scores[district.id] = calculateAnomalyScore(districtAnomalies);
     });
     return scores;
@@ -256,7 +326,9 @@ const Dashboard: React.FC = () => {
         <div className="header-content">
           <div>
             <h1>🗳️ Real-Time Voting Transparency Dashboard</h1>
-            <p className="subtitle">Live monitoring with AI-powered anomaly detection</p>
+            <p className="subtitle">
+              Live monitoring with AI-powered anomaly detection
+            </p>
           </div>
           <div className="header-controls">
             <button
@@ -267,14 +339,18 @@ const Dashboard: React.FC = () => {
               👥 Manage Candidates
             </button>
             <button
-              className={`btn ${isRunning ? 'btn-danger' : 'btn-primary'}`}
+              className={`btn ${isRunning ? "btn-danger" : "btn-primary"}`}
               onClick={toggleSimulation}
-              aria-label={isRunning ? 'Pause simulation' : 'Start simulation'}
+              aria-label={isRunning ? "Pause simulation" : "Start simulation"}
               aria-pressed={isRunning}
             >
-              {isRunning ? '⏸️ Pause' : '▶️ Start'} Simulation
+              {isRunning ? "⏸️ Pause" : "▶️ Start"} Simulation
             </button>
-            <button className="btn btn-secondary" onClick={resetData} aria-label="Reset dashboard">
+            <button
+              className="btn btn-secondary"
+              onClick={resetData}
+              aria-label="Reset dashboard"
+            >
               🔄 Reset
             </button>
             <select
@@ -306,7 +382,11 @@ const Dashboard: React.FC = () => {
 
       {/* Overall Statistics */}
       {overallStats && (
-        <div className="stats-overview" role="region" aria-label="Overall statistics">
+        <div
+          className="stats-overview"
+          role="region"
+          aria-label="Overall statistics"
+        >
           <div className="stat-card">
             <div className="stat-icon" aria-hidden="true">
               📊
@@ -362,7 +442,10 @@ const Dashboard: React.FC = () => {
         {/* Charts Section */}
         <div className="charts-section">
           <div className="chart-container">
-            <VoteTrendsChart voteHistory={voteHistory} candidates={candidates} />
+            <VoteTrendsChart
+              voteHistory={voteHistory}
+              candidates={candidates}
+            />
           </div>
           <div className="chart-container">
             <DistrictVotesChart districts={districts} candidates={candidates} />
@@ -391,7 +474,7 @@ const Dashboard: React.FC = () => {
         <div className="districts-section">
           <h2>📍 District Overview</h2>
           <div className="districts-grid">
-            {districts.map(district => (
+            {districts.map((district) => (
               <DistrictCard
                 key={district.id}
                 district={district}
@@ -411,8 +494,9 @@ const Dashboard: React.FC = () => {
       {/* Footer */}
       <footer className="dashboard-footer" role="contentinfo">
         <p>
-          🛡️ Powered by advanced anomaly detection algorithms | Real-time monitoring using React & Chart.js |
-          Last update: {new Date().toLocaleTimeString()}
+          🛡️ Powered by advanced anomaly detection algorithms | Real-time
+          monitoring using React & Chart.js | Last update:{" "}
+          {new Date().toLocaleTimeString()}
         </p>
       </footer>
     </div>

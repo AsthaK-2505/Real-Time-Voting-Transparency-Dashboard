@@ -3,6 +3,7 @@
 ## 🚀 Get Up and Running in 3 Minutes
 
 ### Step 1: Install Dependencies
+
 ```bash
 npm install
 ```
@@ -10,6 +11,7 @@ npm install
 This will install all required dependencies including TypeScript, React, Chart.js, testing libraries, and build tools.
 
 ### Step 2: Start Development Server
+
 ```bash
 npm start
 ```
@@ -32,14 +34,14 @@ Once running, you can:
 
 ## 🎮 Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start development server with hot reload |
-| `npm test` | Run all tests |
-| `npm test -- --coverage` | Run tests with coverage report |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run build` | Build for production |
-| `npm run type-check` | Type check without building |
+| Command                  | Description                              |
+| ------------------------ | ---------------------------------------- |
+| `npm start`              | Start development server with hot reload |
+| `npm test`               | Run all tests                            |
+| `npm test -- --coverage` | Run tests with coverage report           |
+| `npm run test:watch`     | Run tests in watch mode                  |
+| `npm run build`          | Build for production                     |
+| `npm run type-check`     | Type check without building              |
 
 ---
 
@@ -79,22 +81,28 @@ Expected output: All tests should pass ✓
 ## 🎨 Features to Try
 
 ### Dark Mode
+
 Your system's dark mode preference will automatically apply!
 
 ### Anomaly Detection
+
 Watch for 🚨 alerts when unusual voting patterns are detected:
+
 - High turnout rates (>100%)
 - Suspicious vote rates
 - Statistical outliers
 
 ### Charts
+
 - **Vote Trends**: Line chart showing votes over time
 - **District Votes**: Stacked bar chart by district
 - **Vote Share**: Doughnut chart of candidate distribution
 - **Turnout Rate**: Horizontal bar chart sorted by turnout
 
 ### Accessibility
+
 Try navigating with keyboard only:
+
 - `Tab` to move between controls
 - `Enter` to activate buttons
 - `Space` to toggle selections
@@ -104,6 +112,7 @@ Try navigating with keyboard only:
 ## 📱 Responsive Design
 
 The dashboard works on:
+
 - 🖥️ Desktop (1400px+)
 - 💻 Laptop (1024px+)
 - 📱 Tablet (768px+)
@@ -114,6 +123,7 @@ The dashboard works on:
 ## 🐛 Troubleshooting
 
 ### Port 3000 Already in Use
+
 ```bash
 # Kill the process using port 3000
 npx kill-port 3000
@@ -121,6 +131,7 @@ npm start
 ```
 
 ### TypeScript Errors
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules package-lock.json
@@ -128,6 +139,7 @@ npm install
 ```
 
 ### Build Errors
+
 ```bash
 # Clean build directory
 rm -rf dist

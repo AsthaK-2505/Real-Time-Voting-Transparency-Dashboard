@@ -1,5 +1,5 @@
-import { Component, ReactNode, ErrorInfo } from 'react';
-import { ErrorBoundaryState } from '../types';
+import { Component, ReactNode, ErrorInfo } from "react";
+import { ErrorBoundaryState } from "../types";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -27,8 +27,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Error Boundary caught an error:', error, errorInfo);
-    
+    console.error("Error Boundary caught an error:", error, errorInfo);
+
     // You can also log the error to an error reporting service here
     // logErrorToService(error, errorInfo);
   }
@@ -52,13 +52,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <div className="error-icon">⚠️</div>
             <h1>Oops! Something went wrong</h1>
             <p className="error-message">
-              {this.state.error?.message || 'An unexpected error occurred'}
+              {this.state.error?.message || "An unexpected error occurred"}
             </p>
             <div className="error-actions">
-              <button
-                className="btn btn-primary"
-                onClick={this.handleReset}
-              >
+              <button className="btn btn-primary" onClick={this.handleReset}>
                 Try Again
               </button>
               <button
@@ -68,7 +65,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                 Reload Page
               </button>
             </div>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === "development" && this.state.error && (
               <details className="error-details">
                 <summary>Error Details (Development Only)</summary>
                 <pre>{this.state.error.stack}</pre>

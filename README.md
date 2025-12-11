@@ -21,6 +21,7 @@ A comprehensive, **production-ready** real-time voting transparency dashboard wi
 ## Features
 
 ### Core Functionality
+
 - **Real-time Vote Tracking**: Live updates of voting data across 8 districts
 - **Interactive Charts**: Beautiful data visualizations powered by Chart.js 4
 - **AI-Powered Anomaly Detection**: Statistical analysis using z-scores, moving averages, and turnout analysis
@@ -28,6 +29,7 @@ A comprehensive, **production-ready** real-time voting transparency dashboard wi
 - **District Comparison**: Side-by-side comparison of voting metrics
 
 ### Technical Highlights
+
 - ✅ **TypeScript**: Full type safety across the entire codebase
 - ✅ **Error Boundaries**: Graceful error handling with user-friendly fallbacks
 - ✅ **Performance Optimized**: Memoization and optimized re-renders
@@ -41,11 +43,13 @@ A comprehensive, **production-ready** real-time voting transparency dashboard wi
 ## Technologies
 
 ### Frontend
+
 - **React 18.2** with Hooks (useState, useEffect, useCallback, useMemo)
 - **TypeScript 5.3** for type safety
 - **Chart.js 4.4** + react-chartjs-2 for visualizations
 
 ### Build & Testing
+
 - **Webpack 5** with custom configuration
 - **Babel 7** with TypeScript support
 - **Jest 29** + React Testing Library
@@ -55,29 +59,34 @@ A comprehensive, **production-ready** real-time voting transparency dashboard wi
 ## Installation
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - npm or yarn
 
 ### Steps
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd Real-Time-Voting-Transparency-Dashboard
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Configure environment** (optional)
+
 ```bash
 cp .env.example .env
 # Edit .env to customize settings
 ```
 
 4. **Start development server**
+
 ```bash
 npm start
 ```
@@ -113,14 +122,17 @@ Production files will be in the `dist/` directory.
 The dashboard implements multiple statistical methods:
 
 1. **Z-Score Analysis**
+
    - Identifies data points >2.5 standard deviations from mean
    - High severity for |z| > 3
 
 2. **Moving Average Detection**
+
    - 5-period moving average
    - Detects sudden pattern changes
 
 3. **Turnout Rate Analysis**
+
    - Flags turnout >100% as critical
    - Identifies statistical outliers (>3σ)
 
