@@ -47,8 +47,10 @@ module.exports = {
     }),
     new Dotenv({
       path: "./.env",
-      safe: true,
-      systemvars: true,
+      safe: false, // Don't require .env.example - allow missing .env in production
+      systemvars: true, // Load system environment variables
+      silent: true, // Don't throw errors if .env is missing
+      defaults: true, // Load .env.defaults if available
     }),
   ],
   devServer: {
