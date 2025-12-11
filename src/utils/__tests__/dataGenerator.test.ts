@@ -11,7 +11,7 @@ describe('Data Generator', () => {
       const districts = initializeDistrictData();
       districts.forEach(district => {
         expect(district.votes).toBe(0);
-        expect(district.candidateVotes).toEqual({ A: 0, B: 0, C: 0, D: 0 });
+        expect(district.candidateVotes).toEqual({ A: 0, B: 0, C: 0 });
       });
     });
 
@@ -24,9 +24,9 @@ describe('Data Generator', () => {
   });
 
   describe('getCandidates', () => {
-    it('should return 4 candidates', () => {
+    it('should return 3 default candidates', () => {
       const candidates = getCandidates();
-      expect(candidates).toHaveLength(4);
+      expect(candidates).toHaveLength(3);
     });
 
     it('should have candidates with required properties', () => {
